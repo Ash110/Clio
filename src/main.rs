@@ -1,5 +1,6 @@
 use clap::{Parser, Subcommand};
 mod functions;
+mod helpers;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -12,20 +13,20 @@ struct Args {
 
 #[derive(Subcommand, Debug, Clone)]
 enum Commands {
+    #[clap(name = "get")]
     Get {
         key: Option<String>,
     },
 
     #[clap(name = "set")]
     Set {
-        #[clap(short, long)]
         key: String,
-        #[clap(short, long)]
         value: String,
         #[clap(short, long)]
-        istrue: bool,
+        r#true: bool,
     },
 
+    #[clap(name = "init")]
     Init {
         directory: Option<String>,
     },
@@ -45,10 +46,10 @@ fn main() {
         Commands::Get { key } => {
             println!("Getting value: {}", key.unwrap_or("default".to_string()))
         }
-        Commands::Set { key, value, istrue } => {
+        Commands::Set { key, value, r#true } => {
             println!(
                 "Setting key: {} with value: {} and istrue: {}",
-                key, value, istrue
+                key, value, r#true
             );
         }
         Commands::Init { directory } => functions::init::init(directory, verbose),

@@ -1,19 +1,8 @@
-use chrono::Local;
-use colored::Colorize;
+use crate::helpers::Logger::Logger;
 
 pub fn init(directory: Option<String>, verbose: bool) {
-    macro_rules! log {
-        ($($arg: expr),*) => {
-            if verbose {
-                let now = Local::now();
-                println!(
-                    "{} - {}",
-                    now.format("%H:%M:%S"),
-                    format!($($arg),*)
-                );
-            }
-        };
-    }
+    let logger = Logger::new(true);
+    let verbose_logger = Logger::new(verbose);
 
     let directory_string: String;
     if directory.as_ref().is_some() {
@@ -26,22 +15,23 @@ pub fn init(directory: Option<String>, verbose: bool) {
         directory_string = "./".to_string();
     }
 
-    log!("Initializing in directory: {}", directory_string);
+    verbose_logger.log(format!("Attempting to initialise in directory: {}", directory_string));
 
     // Check if the folder already has a .clio folder
     let clio_folder = format!("{}/.clio", directory_string);
     if std::path::Path::new(&clio_folder).exists() {
-        println!("{}", "Clio is already initialized in this directory".red());
+        logger.warn("Clio is already initialized in this directory".to_string());
     } else {
-        log!("Creating .clio folder");
+        verbose_logger.log("Creating .clio folder".to_string());
         // Create the .clio folder and if it fails, print an error message
         match std::fs::create_dir(&clio_folder) {
             Ok(_) => {
                 let message = format!("Clio initialized successfully in {}", directory_string);
-                println!("{}", message.green());
+                logger.success(message);
             }
             Err(e) => {
-                println!("{}", format!("Error initializing Clio: {}", e).red());
+                let message = format!("Failed to initialize Clio in {}: {}", directory_string, e);
+                logger.error(message);
             }
         }
     }

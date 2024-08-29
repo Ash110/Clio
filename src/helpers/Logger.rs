@@ -10,31 +10,31 @@ impl Logger {
         Logger { verbose }
     }
 
-    pub fn log(&self, message: String) {
+    pub fn log<S: AsRef<str>>(&self, message: S) {
         if self.verbose {
             let now = Local::now();
-            println!("{} - {}", now.format("%H:%M:%S"), message);
+            println!("{} - {}", now.format("%H:%M:%S"), message.as_ref());
         }
     }
 
-    pub fn success(&self, message: String) {
+    pub fn success<S: AsRef<str>>(&self, message: S) {
         if self.verbose {
             let now = Local::now();
-            println!("{} - {}", now.format("%H:%M:%S"), message.green());
+            println!("{} - {}", now.format("%H:%M:%S"), message.as_ref().green());
         }
     }
 
-    pub fn warn(&self, message: String) {
+    pub fn warn<S: AsRef<str>>(&self, message: S) {
         if self.verbose {
             let now = Local::now();
-            println!("{} - {}", now.format("%H:%M:%S"), message.yellow());
+            println!("{} - {}", now.format("%H:%M:%S"), message.as_ref().yellow());
         }
     }
 
-    pub fn error(&self, message: String) {
+    pub fn error<S: AsRef<str>>(&self, message: S) {
         if self.verbose {
             let now = Local::now();
-            println!("{} - {}", now.format("%H:%M:%S"), message.red());
+            println!("{} - {}", now.format("%H:%M:%S"), message.as_ref().red());
         }
     }
 }
